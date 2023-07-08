@@ -1,0 +1,26 @@
+{
+  "name": "social-network-api",
+  "version": "1.0.0",
+  "description": "Social Network API, to store user thoughts and reactions",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TimeBytes/Social-Network-API.git"
+  },
+  "author": "Andy Zhong",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TimeBytes/Social-Network-API/issues"
+  },
+  "homepage": "https://github.com/TimeBytes/Social-Network-API#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.9"
+  }
+}
