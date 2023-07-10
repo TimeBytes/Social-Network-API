@@ -5,23 +5,33 @@ module.exports = {
   //get all thoughts
   async getAllThoughts(req, res) {
     try {
-      const dbThoughtData = await Thought.find({}).populate("reactions");
+      const dbThoughtData = await Thought.find({})
+        .populate({
+          path: "reactions",
+          select: "-__v",
+        })
+        .select("-__v");
       res.json(dbThoughtData);
     } catch (err) {
       console.log(err);
       res.sendStatus(400);
     }
   },
-  //get one thought by id
-  async getThoughtById({ params }, res) {
+
+  //create thought
+  async createThought({ body }, res) {
     try {
-      const dbThoughtData = await Thought.findOne({
-        _id: params.id,
-      }).populate("reactions");
-      //if no thought is found, send 404
-      if (!dbThoughtData) {
+      const dbThoughtData = await Thought.create(body);
+      //find user and push thought id to user's thoughts array
+      const dbUserData = await User.findOneAndUpdate(
+        { _id: body.userId },
+        { $push: { thoughts: dbThoughtData._id } },
+        { new: true }
+      );
+      //if no user is found, send 404
+      if (!dbUserData) {
         res.status(404).json({
-          message: "No thought found with this id!",
+          message: "No user found with this id!",
         });
         return;
       }
@@ -31,10 +41,13 @@ module.exports = {
       res.sendStatus(400);
     }
   },
-  //create thought
-  async createThought({ body }, res) {
+
+  //get one thought by id
+  async getThoughtById({ params }, res) {
     try {
-      const dbThoughtData = await Thought.create(body);
+      const dbThoughtData = await Thought.findOne({
+        _id: params.id,
+      }).populate("reactions");
       //if no thought is found, send 404
       if (!dbThoughtData) {
         res.status(404).json({
@@ -97,6 +110,7 @@ module.exports = {
   //add reaction
   async addReaction({ params, body }, res) {
     try {
+      console.log("helloworld");
       const dbThoughtData = await Thought.findOneAndUpdate(
         {
           _id: params.thoughtId,

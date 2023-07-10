@@ -54,7 +54,7 @@ module.exports = {
     try {
       const dbUserData = await User.findOneAndUpdate(
         { _id: params.id },
-        { body },
+        { $set: body },
         { new: true, runValidators: true }
       );
       //if no user is found, send 404
