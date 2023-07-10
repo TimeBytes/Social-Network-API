@@ -17,6 +17,18 @@ module.exports = {
       res.sendStatus(400);
     }
   },
+
+  //create user
+  async createUser({ body }, res) {
+    try {
+      const dbUserData = await User.create(body);
+      res.json(dbUserData);
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(400);
+    }
+  },
+
   //get one user by id
   async getUserById({ params }, res) {
     try {
@@ -31,16 +43,6 @@ module.exports = {
         res.status(404).json({ message: "No user found with this id!" });
         return;
       }
-      res.json(dbUserData);
-    } catch (err) {
-      console.log(err);
-      res.sendStatus(400);
-    }
-  },
-  //create user
-  async createUser({ body }, res) {
-    try {
-      const dbUserData = await User.create(body);
       res.json(dbUserData);
     } catch (err) {
       console.log(err);
