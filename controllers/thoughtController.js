@@ -110,8 +110,14 @@ module.exports = {
   //add reaction
   async addReaction({ params, body }, res) {
     try {
-      console.log("helloworld");
-      const dbThoughtData = await Thought.findOneAndUpdate(
+      const validateUsername = await User.findOne({
+        username: body.username,
+      });
+      if (!validateUsername) {
+        res.status(404).json({ message: "incorrect username, user not found" });
+        return;
+      }
+      let dbThoughtData = await Thought.findOneAndUpdate(
         {
           _id: params.thoughtId,
         },
@@ -142,6 +148,7 @@ module.exports = {
   //delete reaction
   async removeReaction({ params }, res) {
     try {
+      console.log({ params });
       const dbThoughtData = await Thought.findOneAndUpdate(
         {
           _id: params.thoughtId,

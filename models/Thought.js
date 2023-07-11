@@ -1,11 +1,9 @@
 const { Schema, model } = require("mongoose");
-const dateFormat = require("../utils/helper");
 
 const reactionSchema = new Schema(
   {
     reactionId: {
       type: Schema.Types.ObjectId,
-      default: () => new Types.ObjectId(),
     },
     reactionBody: {
       type: String,
@@ -18,6 +16,7 @@ const reactionSchema = new Schema(
     },
     createdAt: {
       type: Date,
+      default: Date.now,
     },
   },
   {
@@ -28,6 +27,12 @@ const reactionSchema = new Schema(
   }
 );
 
+reactionSchema.pre("save", function (next) {
+  // Format the createdAt timestamp before saving
+  this.createdAt = new Date(this.createdAt).toISOString(); // Format using built-in toISOString() method
+  next();
+});
+
 const thoughtSchema = new Schema(
   {
     thoughtText: {
@@ -37,7 +42,8 @@ const thoughtSchema = new Schema(
       maxlength: 280,
     },
     createdAt: {
-      date: Date,
+      type: Date,
+      default: Date.now,
     },
     username: {
       type: String,
@@ -53,6 +59,12 @@ const thoughtSchema = new Schema(
     id: false,
   }
 );
+
+thoughtSchema.pre("save", function (next) {
+  // Format the createdAt timestamp before saving
+  this.createdAt = new Date(this.createdAt).toISOString(); // Format using built-in toISOString() method
+  next();
+});
 
 thoughtSchema.virtual("reactionCount").get(function () {
   return this.reactions.length;
