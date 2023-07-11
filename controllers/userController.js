@@ -21,6 +21,16 @@ module.exports = {
   //create user
   async createUser({ body }, res) {
     try {
+      const validateDuplicateEmail = await User.findOne({ email: body.email });
+      if (validateDuplicateEmail) {
+        return res.status(400).json({ msg: "Email already in use!" });
+      }
+      const validateDuplicateUsername = await User.findOne({
+        username: body.username,
+      });
+      if (validateDuplicateUsername) {
+        return res.status(400).json({ msg: "Username already in use!" });
+      }
       const dbUserData = await User.create(body);
       res.json(dbUserData);
     } catch (err) {

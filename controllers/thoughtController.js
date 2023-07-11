@@ -1,4 +1,5 @@
 const { ObjectId } = require("mongodb");
+
 const { User, Thought } = require("../models");
 
 module.exports = {
@@ -24,14 +25,22 @@ module.exports = {
       const dbThoughtData = await Thought.create(body);
       //find user and push thought id to user's thoughts array
       const dbUserData = await User.findOneAndUpdate(
-        { _id: body.userId },
-        { $push: { thoughts: dbThoughtData._id } },
-        { new: true }
+        {
+          username: body.username,
+        },
+        {
+          $push: {
+            thoughts: dbThoughtData._id,
+          },
+        },
+        {
+          new: true,
+        }
       );
       //if no user is found, send 404
       if (!dbUserData) {
         res.status(404).json({
-          message: "No user found with this id!",
+          message: "No user found with this username!",
         });
         return;
       }
@@ -117,7 +126,7 @@ module.exports = {
         res.status(404).json({ message: "incorrect username, user not found" });
         return;
       }
-      let dbThoughtData = await Thought.findOneAndUpdate(
+      const dbThoughtData = await Thought.findOneAndUpdate(
         {
           _id: params.thoughtId,
         },
@@ -127,8 +136,8 @@ module.exports = {
           },
         },
         {
-          new: true,
           runValidators: true,
+          new: true,
         }
       );
       //if no thought is found, send 404
@@ -148,7 +157,6 @@ module.exports = {
   //delete reaction
   async removeReaction({ params }, res) {
     try {
-      console.log({ params });
       const dbThoughtData = await Thought.findOneAndUpdate(
         {
           _id: params.thoughtId,
@@ -156,11 +164,12 @@ module.exports = {
         {
           $pull: {
             reactions: {
-              reactionId: params.reactionId,
+              _id: params.reactionId,
             },
           },
         },
         {
+          runValidators: true,
           new: true,
         }
       );
