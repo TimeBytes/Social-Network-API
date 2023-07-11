@@ -25,7 +25,7 @@ Get All Users
 ![screenshot of get all users route](assets/images/screenshot-get-all-users.png)
 
 GitHub Repo: https://github.com/TimeBytes/Social-Network-API  
-Video Walkthrough: https://youtu.be/Jg6iPlaGwUY
+Video Walkthrough: https://youtu.be/8e245MXvhaA
 
 ## Credits
 
