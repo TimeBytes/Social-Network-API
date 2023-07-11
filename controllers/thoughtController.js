@@ -20,11 +20,18 @@ module.exports = {
   //create thought
   async createThought({ body }, res) {
     try {
+      const validateUser = await User.findOne({
+        _id: body.userId,
+      });
+      if (!validateUser) {
+        res.status(404).json({ message: "user not found" });
+        return;
+      }
       const dbThoughtData = await Thought.create(body);
       //find user and push thought id to user's thoughts array
       const dbUserData = await User.findOneAndUpdate(
         {
-          username: body.username,
+          _id: body.userId,
         },
         {
           $push: {
@@ -35,13 +42,6 @@ module.exports = {
           new: true,
         }
       );
-      //if no user is found, send 404
-      if (!dbUserData) {
-        res.status(404).json({
-          message: "No user found with this username!",
-        });
-        return;
-      }
       res.json(dbThoughtData);
     } catch (err) {
       console.log(err);
