@@ -1,9 +1,12 @@
 const { Schema, model, Types } = require("mongoose");
+const { DateTime } = require("luxon");
 
+// Reaction Schema
 const reactionSchema = new Schema(
   {
     reactionId: {
       type: Schema.Types.ObjectId,
+      // default value set to a new ObjectId
       default: () => new Types.ObjectId(),
     },
     reactionBody: {
@@ -18,6 +21,10 @@ const reactionSchema = new Schema(
     createdAt: {
       type: Date,
       default: Date.now,
+      // use getter to format date
+      get: function (value) {
+        return DateTime.fromJSDate(value).toFormat("LLL d',' yyyy 'at' hh:mma");
+      },
     },
   },
   {
@@ -28,12 +35,7 @@ const reactionSchema = new Schema(
   }
 );
 
-reactionSchema.pre("save", function (next) {
-  // Format the createdAt timestamp before saving
-  this.createdAt = new Date(this.createdAt).toISOString(); // Format using built-in toISOString() method
-  next();
-});
-
+// Thought Schema
 const thoughtSchema = new Schema(
   {
     thoughtText: {
@@ -45,6 +47,10 @@ const thoughtSchema = new Schema(
     createdAt: {
       type: Date,
       default: Date.now,
+      // use getter to format date
+      get: function (value) {
+        return DateTime.fromJSDate(value).toFormat("LLL d',' yyyy 'at' hh:mma");
+      },
     },
     username: {
       type: String,
@@ -61,16 +67,12 @@ const thoughtSchema = new Schema(
   }
 );
 
-thoughtSchema.pre("save", function (next) {
-  // Format the createdAt timestamp before saving
-  this.createdAt = new Date(this.createdAt).toISOString(); // Format using built-in toISOString() method
-  next();
-});
-
+// Virtual to get total count of reactions
 thoughtSchema.virtual("reactionCount").get(function () {
   return this.reactions.length;
 });
 
+// Create the Thought model using the Thought Schema
 const Thought = model("Thought", thoughtSchema);
 
 module.exports = Thought;

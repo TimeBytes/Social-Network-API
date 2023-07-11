@@ -18,6 +18,7 @@
   "homepage": "https://github.com/TimeBytes/Social-Network-API#readme",
   "dependencies": {
     "express": "^4.18.2",
+    "luxon": "^3.3.0",
     "mongoose": "^7.3.2"
   },
   "devDependencies": {
